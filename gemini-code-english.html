@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>英文發音全方位練習網頁</title>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --secondary: #9b59b6;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #eef2f3;
+            color: var(--dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 750px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 5px;
+            font-size: 26px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        h2 {
+            font-size: 18px;
+            color: var(--dark);
+            margin-top: 0;
+            border-left: 4px solid var(--primary);
+            padding-left: 10px;
+        }
+
+        .card {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid #e0e0e0;
+        }
+
+        /* 字母網格樣式 */
+        .alphabet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .letter-btn {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 10px 5px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .letter-btn:hover {
+            border-color: var(--secondary);
+            background-color: #f3e5f5;
+            transform: translateY(-2px);
+        }
+
+        .letter-btn span {
+            display: block;
+            font-size: 11px;
+            color: #7f8c8d;
+            font-weight: normal;
+            margin-top: 4px;
+        }
+
+        /* 控制選項 */
+        .mode-select {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 80px;
+            padding: 12px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            resize: none;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        button.action-btn {
+            flex: 1;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-speak { background-color: var(--primary); color: white; }
+        .btn-speak:hover { background-color: #357abd; }
+
+        .btn-record { background-color: var(--success); color: white; }
+        .btn-record:hover { background-color: #27ae60; }
+
+        .btn-record.recording {
+            background-color: var(--danger);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        .text-compare {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #ccc;
+            min-height: 40px;
+            margin-top: 5px;
+        }
+
+        .match { color: var(--success); font-weight: bold; }
+        .mismatch { color: var(--danger); text-decoration: underline; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>全方位英文發音練習神器</h1>
+    <div class="subtitle">建議使用 Google Chrome 瀏覽器以獲得最佳體驗</div>
+
+    <!-- 階段一：字母發音練習區 -->
+    <div class="card">
+        <h2>階段一：A - Z 基礎字母發音與自然發音</h2>
+        <div class="mode-select">
+            <label><input type="radio" name="pronounce-mode" value="letter" checked> 💡 字母名 (Aa = "欸")</label>
+            <label><input type="radio" name="pronounce-mode" value="phonics"> 🍎 自然發音 (Aa = "阿/愛")</label>
+        </div>
+        <p style="font-size: 13px; color: #666; margin: 0 0 10px 0;">點擊下方任一個字母，聆聽發音並跟著大聲唸出來：</p>
+        
+        <div class="alphabet-grid" id="alphabet-container">
+            <!-- 字母按鈕由 JavaScript 自動生成 -->
+        </div>
+    </div>
+
+    <!-- 階段二：句子進階挑戰區 -->
+    <div class="card">
+        <h2>階段二：進階句子跟讀與 AI 辨識</h2>
+        <label for="text-input" style="font-size: 14px; color: #555;">請輸入或選擇想要練習的句子：</label>
+        <textarea id="text-input" placeholder="例如：Practice makes perfect."></textarea>
+        
+        <div class="btn-group">
+            <button class="action-btn btn-speak" id="btn-play">🔊 聽正確發音</button>
+            <button class="action-btn btn-record" id="btn-mic">🎤 開始錄音練習</button>
+        </div>
+        
+        <div style="margin-top: 15px;">
+            <div style="font-weight: bold; color: #7f8c8d; font-size: 14px;" id="status-text">狀態：準備就緒</div>
+            <div class="text-compare" id="user-speech-output" style="font-size: 15px;">尚未錄音...</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 字母自然發音對照表 (美式發音近似詞提示)
+    const alphabetData = [
+        { upper: 'A', lower: 'a', word: 'Apple' }, { upper: 'B', lower: 'b', word: 'Bear' },
+        { upper: 'C', lower: 'c', word: 'Cat' },   { upper: 'D', lower: 'd', word: 'Dog' },
+        { upper: 'E', lower: 'e', word: 'Egg' },   { upper: 'F', lower: 'f', word: 'Fish' },
+        { upper: 'G', lower: 'g', word: 'Goat' },  { upper: 'H', lower: 'h', word: 'Hat' },
+        { upper: 'I', lower: 'i', word: 'Igloo' }, { upper: 'J', lower: 'j', word: 'Jet' },
+        { upper: 'K', lower: 'k', word: 'Kite' },  { upper: 'L', lower: 'l', word: 'Lion' },
+        { upper: 'M', lower: 'm', word: 'Monkey' },{ upper: 'N', lower: 'n', word: 'Nut' },
+        { upper: 'O', lower: 'o', word: 'Octopus' },{ upper: 'P', lower: 'p', word: 'Pig' },
+        { upper: 'Q', lower: 'q', word: 'Queen' }, { upper: 'R', lower: 'r', word: 'Ring' },
+        { upper: 'S', lower: 's', word: 'Sun' },   { upper: 'T', lower: 't', word: 'Tiger' },
+        { upper: 'U', lower: 'u', word: 'Umbrella' },{ upper: 'V', lower: 'v', word: 'Van' },
+        { upper: 'W', lower: 'w', word: 'Window' },{ upper: 'X', lower: 'x', word: 'Box' },
+        { upper: 'Y', lower: 'y', word: 'Yo-yo' }, { upper: 'Z', lower: 'z', word: 'Zebra' }
+    ];
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechSynthesis = window.speechSynthesis;
+
+    // 動態生成 26 個字母按鈕
+    const alphabetContainer = document.getElementById('alphabet-container');
+    alphabetData.forEach(item => {
+        const btn = document.createElement('button');
+        btn.className = 'letter-btn';
+        btn.innerHTML = `${item.upper}${item.lower}<span>${item.word}</span>`;
+        
+        btn.addEventListener('click', () => {
+            const mode = document.querySelector('input[name="pronounce-mode"]:checked').value;
+            playLetterSound(item.lower, item.word, mode);
+        });
+        alphabetContainer.appendChild(btn);
+    });
+
+    // 播放字母發音
+    function playLetterSound(letter, exampleWord, mode) {
+        SpeechSynthesis.cancel();
+        let textToSpeak = letter;
+
+        if (mode === 'phonics') {
+            // 利用單字引導瀏覽器發出自然發音 (例："a, for, apple")
+            textToSpeak = `${letter}, as in ${exampleWord}`;
+        }
+
+        const utterance = new SpeechSynthesisUtterance(textToSpeak);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.85; // 慢速更清晰
+        SpeechSynthesis.speak(utterance);
+    }
+
+    // --- 以下為句子挑戰區邏輯 ---
+    const textInput = document.getElementById('text-input');
+    const btnPlay = document.getElementById('btn-play');
+    const btnMic = document.getElementById('btn-mic');
+    const statusText = document.getElementById('status-text');
+    const speechOutput = document.getElementById('user-speech-output');
+
+    // 播放句子
+    btnPlay.addEventListener('click', () => {
+        const text = textInput.value.trim();
+        if (!text) return alert("請先輸入英文句子！");
+        SpeechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
+        SpeechSynthesis.speak(utterance);
+    });
+
+    // 語音辨識
+    let recognition;
+    let isRecording = false;
+
+    if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.lang = 'en-US';
+        recognition.continuous = false;
+
+        recognition.onstart = () => {
+            isRecording = true;
+            btnMic.textContent = "🛑 正在聆聽...";
+            btnMic.classList.add('recording');
+            statusText.textContent = "狀態：請大聲讀出句子...";
+        };
+
+        recognition.onend = () => {
+            isRecording = false;
+            btnMic.textContent = "🎤 開始錄音練習";
+            btnMic.classList.remove('recording');
+        };
+
+        recognition.onresult = (event) => {
+            const userSpeech = event.results[0][0].transcript;
+            statusText.textContent = "狀態：比對完成！";
+            compareSpeech(textInput.value.trim(), userSpeech);
+        };
+
+        recognition.onerror = (event) => {
+            statusText.textContent = `狀態：未成功辨識 (${event.error})`;
+        };
+    }
+
+    btnMic.addEventListener('click', () => {
+        if (!SpeechRecognition) return alert("瀏覽器不支援錄音辨識。");
+        if (isRecording) {
+            recognition.stop();
+        } else {
+            if (!textInput.value.trim()) return alert("請先輸入目標英文，再進行跟讀。");
+            speechOutput.innerHTML = "聆聽中...";
+            recognition.start();
+        }
+    });
+
+    function compareSpeech(original, spoken) {
+        const cleanWords = (str) => str.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g,"").split(/\s+/).filter(Boolean);
+        const origWords = cleanWords(original);
+        const spokenWords = cleanWords(spoken);
+
+        let htmlResult = "";
+        spokenWords.forEach(word => {
+            if (origWords.includes(word)) {
+                htmlResult += `<span class="match">${word}</span> `;
+            } else {
+                htmlResult += `<span class="mismatch">${word}</span> `;
+            }
+        });
+
+        const correctCount = spokenWords.filter(word => origWords.includes(word)).length;
+        const accuracy = origWords.length > 0 ? Math.round((correctCount / origWords.length) * 100) : 0;
+
+        speechOutput.innerHTML = `
+            <div><strong>你的發音：</strong> ${htmlResult}</div>
+            <div style="margin-top: 8px; font-size: 13px; color: #666;">
+                完整辨識："${spoken}" | <strong>單字匹配率：${accuracy}%</strong>
+            </div>
+        `;
+    }
+</script>
+
+</body>
+</html>
