@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🚀 數學星球探險</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Noto+Sans+TC:wght@400;700;900&display=swap');
+
+:root {
+  --bg:      #0D0F1A;
+  --card:    #161929;
+  --card2:   #1E2236;
+  --border:  #2A2F4A;
+  --text:    #E8EAFF;
+  --sub:     #7B82A8;
+  --c1: #FF6B6B; --c2: #FFD93D; --c3: #6BCB77;
+  --c4: #4D96FF; --c5: #FF9F43; --c6: #C77DFF;
+  --radius: 20px;
+  --font-display: 'Baloo 2', 'Noto Sans TC', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-display);
+  background: var(--bg);
+  background-image:
+    radial-gradient(ellipse at 20% 10%, rgba(77,150,255,.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 90%, rgba(199,125,255,.12) 0%, transparent 50%);
+  min-height: 100vh;
+  color: var(--text);
+  overflow-x: hidden;
+  user-select: none;
+}
+
+/* Stars background */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 15% 25%, rgba(255,255,255,.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 35% 60%, rgba(255,255,255,.4) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 55% 15%, rgba(255,255,255,.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 70% 45%, rgba(255,255,255,.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 85% 70%, rgba(255,255,255,.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 10% 80%, rgba(255,255,255,.4) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 90% 20%, rgba(255,255,255,.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 45% 85%, rgba(255,255,255,.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 60% 55%, rgba(255,255,255,.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 25% 40%, rgba(255,255,255,.4) 0%, transparent 100%);
+  pointer-events: none; z-index: 0;
+}
+
+/* ── Header ── */
+.header {
+  position: relative; z-index: 1;
+  text-align: center;
+  padding: 32px 20px 8px;
+}
+.header h1 {
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  font-weight: 800;
+  letter-spacing: 1px;
+  background: linear-gradient(90deg, var(--c4), var(--c6), var(--c2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.header p { color: var(--sub); font-size: .95rem; margin-top: 6px; }
+
+/* ── Progress bar ── */
+.progress-wrap {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  padding: 10px 20px;
+  font-size: .9rem; color: var(--sub);
+}
+.xp-bar { flex: 1; max-width: 300px; height: 10px; background: var(--border); border-radius: 99px; overflow: hidden; }
+.xp-fill { height: 100%; background: linear-gradient(90deg, var(--c4), var(--c6)); border-radius: 99px; transition: width .5s ease; width: 0%; }
+.xp-label { font-weight: 800; color: var(--c2); min-width: 60px; text-align: right; }
+
+/* ── Nav ── */
+.nav {
+  position: relative; z-index: 1;
+  display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;
+  padding: 14px 16px;
+}
+.nav-btn {
+  padding: 9px 18px;
+  font-size: .9rem; font-weight: 800;
+  border: 2px solid var(--border);
+  border-radius: 50px;
+  cursor: pointer;
+  font-family: var(--font-display);
+  background: var(--card);
+  color: var(--sub);
+  transition: all .15s;
+}
+.nav-btn:hover { border-color: var(--c4); color: var(--c4); }
+.nav-btn.active { color: var(--bg); border-color: transparent; }
+.nav-btn[data-tab="t10"].active  { background: var(--c3); }
+.nav-btn[data-tab="t20"].active  { background: var(--c4); }
+.nav-btn[data-tab="t100"].active { background: var(--c5); }
+.nav-btn[data-tab="mul"].active  { background: var(--c6); }
+
+/* ── Panels ── */
+.panel { display: none; position: relative; z-index: 1; max-width: 780px; margin: 0 auto; padding: 8px 16px 50px; animation: fadeUp .3s ease; }
+.panel.active { display: block; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+/* ── Card ── */
+.card {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.4);
+}
+.card-title {
+  font-size: 1rem; font-weight: 800;
+  color: var(--sub); letter-spacing: 1px;
+  text-transform: uppercase; margin-bottom: 20px;
+  display: flex; align-items: center; gap: 8px;
+}
+.badge {
+  display: inline-block;
+  padding: 2px 10px; border-radius: 99px;
+  font-size: .75rem; font-weight: 800;
+  background: var(--border); color: var(--sub);
+}
+
+/* ── Question display ── */
+.q-wrap {
+  display: flex; align-items: center; justify-content: center;
+  gap: clamp(10px,3vw,24px); flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.q-num {
+  font-size: clamp(3.5rem,10vw,5.5rem);
+  font-weight: 800; line-height: 1;
+}
+.q-op {
+  font-size: clamp(2.5rem,7vw,4rem);
+  font-weight: 800; color: var(--sub);
+}
+.q-eq { font-size: clamp(2.5rem,7vw,4rem); font-weight: 800; color: var(--border); }
+.q-box {
+  min-width: clamp(72px,14vw,100px); height: clamp(72px,14vw,100px);
+  border: 3px dashed var(--c4);
+  border-radius: 16px;
+  background: rgba(77,150,255,.08);
+  font-size: clamp(3rem,9vw,4.5rem);
+  font-weight: 800; color: var(--c4);
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+.q-box.filled { border-style: solid; background: rgba(107,203,119,.1); border-color: var(--c3); color: var(--c3); }
+.q-box.err    { border-style: solid; background: rgba(255,107,107,.1); border-color: var(--c1); color: var(--c1); animation: shake .35s ease; }
+
+/* ── Number line hint ── */
+.numline-wrap { margin-bottom: 14px; overflow-x: auto; padding-bottom: 4px; }
+.numline {
+  display: flex; align-items: flex-end; justify-content: center;
+  gap: 3px; min-width: max-content; margin: 0 auto;
+}
+.nl-dot {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .7rem; font-weight: 800; color: var(--bg);
+  flex-shrink: 0; transition: all .2s;
+}
+.nl-dot.a    { background: var(--c4); }
+.nl-dot.b    { background: var(--c5); }
+.nl-dot.gone { background: var(--border); color: var(--sub); opacity: .4; }
+.nl-dot.empty { background: transparent; border: 2px dashed var(--border); color: var(--sub); }
+
+/* ── Answer modes ── */
+.mode-toggle {
+  display: flex; gap: 8px; margin-bottom: 16px; justify-content: flex-end;
+}
+.mode-btn {
+  padding: 5px 14px; font-size: .8rem; font-weight: 800;
+  border: 2px solid var(--border); border-radius: 99px;
+  background: transparent; color: var(--sub);
+  cursor: pointer; font-family: var(--font-display);
+  transition: all .15s;
+}
+.mode-btn.active { background: var(--c4); border-color: var(--c4); color: var(--bg); }
+
+/* ── Choice buttons ── */
+.choices {
+  display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;
+  margin-top: 4px;
+}
+.choice-btn {
+  min-width: 72px; height: 72px;
+  font-size: 1.8rem; font-weight: 800;
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  background: var(--card2);
+  color: var(--text);
+  cursor: pointer;
+  font-family: var(--font-display);
+  transition: all .12s;
+  box-shadow: 0 4px 0 rgba(0,0,0,.4);
+}
+.choice-btn:hover { border-color: var(--c4); color: var(--c4); transform: translateY(-3px); box-shadow: 0 7px 0 rgba(0,0,0,.3); }
+.choice-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,0,0,.4); }
+.choice-btn.correct { background: rgba(107,203,119,.15); border-color: var(--c3); color: var(--c3); box-shadow: 0 0 20px rgba(107,203,119,.3); animation: pop .35s ease; }
+.choice-btn.wrong   { background: rgba(255,107,107,.15); border-color: var(--c1); color: var(--c1); animation: shake .35s ease; }
+
+/* ── Input mode ── */
+.input-row {
+  display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 4px;
+}
+.ans-input {
+  width: 110px; height: 64px;
+  font-size: 2rem; font-weight: 800;
+  text-align: center;
+  background: var(--card2);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  color: var(--text);
+  font-family: var(--font-display);
+  outline: none;
+  transition: border-color .2s;
+}
+.ans-input:focus { border-color: var(--c4); }
+.submit-btn {
+  padding: 14px 28px;
+  font-size: 1.1rem; font-weight: 800;
+  background: var(--c4); color: var(--bg);
+  border: none; border-radius: 14px;
+  cursor: pointer; font-family: var(--font-display);
+  box-shadow: 0 4px 0 rgba(0,0,0,.4);
+  transition: all .12s;
+}
+.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 rgba(0,0,0,.3); }
+.submit-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,0,0,.4); }
+
+/* ── Feedback ── */
+.fb {
+  min-height: 32px; font-size: 1.1rem; font-weight: 800;
+  margin: 10px 0; text-align: center; transition: all .2s;
+}
+.fb.ok  { color: var(--c3); }
+.fb.err { color: var(--c1); }
+.fb.tip { color: var(--c2); font-size: .95rem; }
+
+/* ── Next btn ── */
+.next-btn {
+  display: none;
+  margin-top: 6px;
+  padding: 12px 36px;
+  font-size: 1rem; font-weight: 800;
+  background: linear-gradient(90deg, var(--c4), var(--c6));
+  color: white; border: none; border-radius: 50px;
+  cursor: pointer; font-family: var(--font-display);
+  box-shadow: 0 4px 16px rgba(77,150,255,.4);
+  transition: all .15s;
+}
+.next-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(77,150,255,.4); }
+.next-btn:active { transform: translateY(2px); }
+
+/* ── Score row ── */
+.score-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px; flex-wrap: wrap; gap: 8px;
+}
+.stars { display: flex; gap: 3px; font-size: 1.3rem; }
+.star { opacity: .15; transition: all .3s; }
+.star.lit { opacity: 1; animation: pop .4s ease; }
+.streak { font-size: .85rem; font-weight: 800; color: var(--c2); }
+
+/* ── Multiplication table ── */
+.mul-select-row {
+  display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;
+}
+.mul-sel-btn {
+  width: 48px; height: 48px;
+  font-size: 1.2rem; font-weight: 800;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: var(--card2); color: var(--sub);
+  cursor: pointer; font-family: var(--font-display);
+  transition: all .12s;
+}
+.mul-sel-btn:hover { border-color: var(--c6); color: var(--c6); }
+.mul-sel-btn.active { background: rgba(199,125,255,.15); border-color: var(--c6); color: var(--c6); }
+
+/* ── Streak badge ── */
+.streak-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(255,217,61,.1); border: 1.5px solid var(--c2);
+  color: var(--c2); padding: 3px 12px; border-radius: 99px;
+  font-size: .85rem; font-weight: 800;
+}
+
+/* ── Animations ── */
+@keyframes pop   { 0%,100%{transform:scale(1)} 50%{transform:scale(1.18)} }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+
+/* ── Canvas ── */
+#canvas { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:999; }
+
+@media (max-width:480px) {
+  .choice-btn { min-width:60px; height:60px; font-size:1.5rem; }
+  .q-num { font-size: 3rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🚀 數學星球探險</h1>
+  <p>小學一二年級・答對得分・闖關升級！</p>
+</div>
+
+<div class="progress-wrap">
+  <span>⭐ 總分</span>
+  <div class="xp-bar"><div class="xp-fill" id="xp-fill"></div></div>
+  <span class="xp-label" id="xp-label">0 分</span>
+</div>
+
+<nav class="nav">
+  <button class="nav-btn active" data-tab="t10"  onclick="switchTab('t10')">🟢 10以內</button>
+  <button class="nav-btn"        data-tab="t20"  onclick="switchTab('t20')">🔵 20以內</button>
+  <button class="nav-btn"        data-tab="t100" onclick="switchTab('t100')">🟠 100以內</button>
+  <button class="nav-btn"        data-tab="mul"  onclick="switchTab('mul')">🟣 乘法</button>
+</nav>
+
+<!-- ══ 10以內 ══ -->
+<div id="t10-panel" class="panel active">
+  <div class="card" id="t10-add-card">
+    <div class="card-title">➕ 加法 <span class="badge" id="t10-add-badge">10以內</span></div>
+    <div class="score-row">
+      <div class="stars" id="t10-add-stars"></div>
+      <div class="streak-badge" id="t10-add-streak">🔥 連對 0</div>
+    </div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" onclick="setMode('t10-add','choice',this)">選擇</button>
+      <button class="mode-btn"        onclick="setMode('t10-add','input',this)">填空</button>
+    </div>
+    <div class="q-wrap" id="t10-add-q"></div>
+    <div class="numline-wrap"><div class="numline" id="t10-add-nl"></div></div>
+    <div class="fb" id="t10-add-fb"></div>
+    <div id="t10-add-ans"></div>
+    <div style="text-align:center;margin-top:12px"><button class="next-btn" id="t10-add-next" onclick="newQ('t10-add')">下一題 →</button></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">➖ 減法 <span class="badge" id="t10-sub-badge">10以內</span></div>
+    <div class="score-row">
+      <div class="stars" id="t10-sub-stars"></div>
+      <div class="streak-badge" id="t10-sub-streak">🔥 連對 0</div>
+    </div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" onclick="setMode('t10-sub','choice',this)">選擇</button>
+      <button class="mode-btn"        onclick="setMode('t10-sub','input',this)">填空</button>
+    </div>
+    <div class="q-wrap" id="t10-sub-q"></div>
+    <div class="numline-wrap"><div class="numline" id="t10-sub-nl"></div></div>
+    <div class="fb" id="t10-sub-fb"></div>
+    <div id="t10-sub-ans"></div>
+    <div style="text-align:center;margin-top:12px"><button class="next-btn" id="t10-sub-next" onclick="newQ('t10-sub')">下一題 →</button></div>
+  </div>
+</div>
+
+<!-- ══ 20以內 ══ -->
+<div id="t20-panel" class="panel">
+  <div class="card">
+    <div class="card-title">➕ 進位加法 <span class="badge">20以內</span></div>
+    <div class="score-row">
+      <div class="stars" id="t20-add-stars"></div>
+      <div class="streak-badge" id="t20-add-streak">🔥 連對 0</div>
+    </div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" onclick="setMode('t20-add','choice',this)">選擇</button>
+      <button class="mode-btn"        onclick="setMode('t20-add','input',this)">填空</button>
+    </div>
+    <div class="q-wrap" id="t20-add-q"></div>
+    <div class="numline-wrap"><div class="numline" id="t20-add-nl"></div></div>
+    <div class="fb" id="t20-add-fb"></div>
+    <div id="t20-add-ans"></div>
+    <div style="text-align:center;margin-top:12px"><button class="next-btn" id="t20-add-next" onclick="newQ('t20-add')">下一題 →</button></div>
+  </div>
+  <div class="card">
+    <div class="card-title">➖ 借位減法 <span class="badge">20以內</span></div>
+    <div class="score-row">
+      <div class="stars" id="t20-sub-stars"></div>
+      <div class="streak-badge" id="t20-sub-streak">🔥 連對 0</div>
+    </div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" onclick="setMode('t20-sub','choice',this)">選擇</button>
+      <button class="mode-btn"        onclick="setMode('t20-sub','input',this)">填空</button>
+    </div>
+    <div class="q-wrap" id="t20-sub-q"></div>
+    <div class="numline-wrap"><div class="numline" id="t20-sub-nl"></div></div>
+    <div class="fb" id="t20-sub-fb"></div>
+    <div id="t20-sub-ans"></div>
+    <div style="text-align:center;margin-top:12px"><button class="next-btn" id="t20-sub-next" onclick="newQ('t20-sub')">下一題 →</button></div>
+  </div>
+</div>
+
+<!-- ══ 100以內 ══ -->
+<div id="t100-panel" class="panel">
+  <div class="card">
+    <div class="card-title">➕ 加法 <span class="badge">100以內</span></div>
+    <div class="score-row">
+      <div class="stars" id="t100-add-stars"></div>
+      <div class="streak-badge" id="t100-add-streak">🔥 連對 0</div>
+    </div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" onclick="setMode('t100-add','choice',this)">選擇</button>
+      <button class="mode-btn"        onclick="setMode('t100-add','input',this)">填空</button>
+    </div>
+    <div class="q-wrap" id="t100-add-q"></div>
+    <div class="fb" id="t100-add-fb"></div>
+    <div id="t100-add-ans"></div>
+    <div style="text-align:center;margin-top:12px"><button class="next-btn" id="t100-add-next" onclick="newQ('t100-add')">下一題 →</button></div>
+  </div>
+  <div class="card">
+    <div class="card-title">➖ 減法 <span class="badge">100以內</span></div>
+    <div class="score-row">
+      <div class="stars" id="t100-sub-stars"></div>
+      <div class="streak-badge" id="t100-sub-streak">🔥 連對 0</div>
+    </div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" onclick="setMode('t100-sub','choice',this)">選擇</button>
+      <button class="mode-btn"        onclick="setMode('t100-sub','input',this)">填空</button>
+    </div>
+    <div class="q-wrap" id="t100-sub-q"></div>
+    <div class="fb" id="t100-sub-fb"></div>
+    <div id="t100-sub-ans"></div>
+    <div style="text-align:center;margin-top:12px"><button class="next-btn" id="t100-sub-next" onclick="newQ('t100-sub')">下一題 →</button></div>
+  </div>
+</div>
+
+<!-- ══ 乘法 ══ -->
+<div id="mul-panel" class="panel">
+  <div class="card">
+    <div class="card-title">✖️ 乘法練習</div>
+    <div style="margin-bottom:14px;color:var(--sub);font-size:.9rem;">選擇要練習的乘數：</div>
+    <div class="mul-select-row" id="mul-sel-row"></div>
+    <div class="score-row" style="margin-top:16px">
+      <div class="stars" id="mul-stars"></div>
+      <div class="streak-badge" id="mul-streak">🔥 連對 0</div>
+    </div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" onclick="setMode('mul','choice',this)">選擇</button>
+      <button class="mode-btn"        onclick="setMode('mul','input',this)">填空</button>
+    </div>
+    <div class="q-wrap" id="mul-q"></div>
+    <div class="fb" id="mul-fb"></div>
+    <div id="mul-ans"></div>
+    <div style="text-align:center;margin-top:12px"><button class="next-btn" id="mul-next" onclick="newQ('mul')">下一題 →</button></div>
+  </div>
+</div>
+
+<canvas id="canvas"></canvas>
+
+<script>
+/* ════════════════════════════
+   狀態管理
+════════════════════════════ */
+const state = {};
+const MODULES = ['t10-add','t10-sub','t20-add','t20-sub','t100-add','t100-sub','mul'];
+const MODE = {};   // 每個 module 的答題模式 'choice' | 'input'
+const ANS  = {};   // 每個 module 的正確答案
+const DONE = {};   // 是否已作答
+let totalXP = 0;
+let mulFactor = 2; // 預設練 2 的乘法
+let streak = {};   // 連對計數
+
+MODULES.forEach(m => {
+  state[m] = { score: 0 };
+  MODE[m]  = 'choice';
+  DONE[m]  = false;
+  streak[m]= 0;
+});
+
+/* ════════════════════════════
+   初始化
+════════════════════════════ */
+window.onload = () => {
+  MODULES.forEach(m => { makeStars(m+'-stars'); newQ(m); });
+  buildMulSel();
+  setupCanvas();
+};
+
+/* ── Tab ── */
+function switchTab(tab) {
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.tab===tab));
+  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id===tab+'-panel'));
+}
+
+/* ── Mode toggle ── */
+function setMode(mod, mode, btn) {
+  MODE[mod] = mode;
+  btn.closest('.mode-toggle').querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  newQ(mod);
+}
+
+/* ════════════════════════════
+   出題邏輯
+════════════════════════════ */
+function newQ(mod) {
+  DONE[mod] = false;
+  hide(mod+'-next');
+  setFb(mod,'','');
+
+  let a, b, ans, op, minAns=0, maxAns=10;
+
+  if (mod === 't10-add') {
+    a = rand(1,9); b = rand(1,10-a); ans = a+b; op='+'; maxAns=10;
+  } else if (mod === 't10-sub') {
+    a = rand(2,10); b = rand(1,a); ans = a-b; op='−'; maxAns=10;
+  } else if (mod === 't20-add') {
+    // 進位：確保答案 > 10
+    do { a=rand(2,9); b=rand(2,9); } while(a+b<=10||a+b>20);
+    ans=a+b; op='+'; maxAns=20;
+  } else if (mod === 't20-sub') {
+    // 借位：a在11-20，b讓個位不夠減
+    a = rand(11,20); b = rand(2,9);
+    while (a-b < 0 || (a%10) >= (b%10)) { a=rand(11,20); b=rand(2,9); }
+    ans=a-b; op='−'; maxAns=20;
+  } else if (mod === 't100-add') {
+    a=rand(10,89); b=rand(5,99-a); ans=a+b; op='+'; maxAns=100;
+  } else if (mod === 't100-sub') {
+    a=rand(20,99); b=rand(5,a-1); ans=a-b; op='−'; maxAns=100;
+  } else if (mod === 'mul') {
+    a=mulFactor; b=rand(1,10); ans=a*b; op='×'; maxAns=100;
+  }
+
+  ANS[mod] = ans;
+
+  // 出題顯示
+  const qEl = document.getElementById(mod+'-q');
+  const color1 = getComputedStyle(document.documentElement).getPropertyValue('--c4').trim();
+  const color2 = getComputedStyle(document.documentElement).getPropertyValue('--c5').trim();
+  qEl.innerHTML = `
+    <span class="q-num" style="color:var(--c4)">${a}</span>
+    <span class="q-op">${op}</span>
+    <span class="q-num" style="color:var(--c5)">${b}</span>
+    <span class="q-eq">=</span>
+    <div class="q-box" id="${mod}-box">?</div>`;
+
+  // 數線提示（100以內和乘法不顯示）
+  const nlEl = document.getElementById(mod+'-nl');
+  if (nlEl) renderNumLine(nlEl, mod, a, b, op, maxAns);
+
+  // 答題區
+  renderAnsArea(mod, ans, maxAns);
+}
+
+/* ── 數線 ── */
+function renderNumLine(el, mod, a, b, op, max) {
+  el.innerHTML = '';
+  const total = op==='×' ? a*b : (op==='+' ? a+b : a);
+  const show  = Math.min(total, max);
+  for (let i=1; i<=show; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'nl-dot';
+    if (op==='+') {
+      dot.classList.add(i<=a ? 'a' : 'b');
+    } else if (op==='−') {
+      dot.classList.add(i<=(a-b) ? 'a' : 'gone');
+    }
+    dot.textContent = i<=9||show<=20 ? i : '';
+    el.appendChild(dot);
+  }
+}
+
+/* ── 答題區 ── */
+function renderAnsArea(mod, ans, maxAns) {
+  const wrap = document.getElementById(mod+'-ans');
+  wrap.innerHTML = '';
+  if (MODE[mod]==='choice') {
+    const choices = document.createElement('div');
+    choices.className = 'choices';
+    const opts = makeChoices(ans, maxAns);
+    opts.forEach(v => {
+      const btn = document.createElement('button');
+      btn.className='choice-btn'; btn.textContent=v;
+      btn.onclick=()=>checkChoice(mod, v, btn, choices);
+      choices.appendChild(btn);
+    });
+    wrap.appendChild(choices);
+  } else {
+    const row = document.createElement('div');
+    row.className='input-row';
+    const inp = document.createElement('input');
+    inp.type='number'; inp.min='0'; inp.max='200';
+    inp.className='ans-input'; inp.id=mod+'-input';
+    inp.placeholder='?';
+    inp.onkeydown = e => { if(e.key==='Enter') submitInput(mod, inp); };
+    const btn = document.createElement('button');
+    btn.className='submit-btn'; btn.textContent='確認 ✓';
+    btn.onclick=()=>submitInput(mod, inp);
+    row.appendChild(inp); row.appendChild(btn);
+    wrap.appendChild(row);
+    setTimeout(()=>inp.focus(), 80);
+  }
+}
+
+/* ── 選擇題 ── */
+function checkChoice(mod, v, btn, wrap) {
+  if (DONE[mod]) return;
+  if (v === ANS[mod]) {
+    btn.classList.add('correct');
+    correct(mod);
+    wrap.querySelectorAll('.choice-btn').forEach(b=>{ if(b!==btn) b.disabled=true; b.style.opacity=b===btn?'1':'.3'; });
+  } else {
+    btn.classList.add('wrong');
+    setTimeout(()=>btn.classList.remove('wrong'),400);
+    wrong(mod, btn);
+  }
+}
+
+/* ── 填空題 ── */
+function submitInput(mod, inp) {
+  if (DONE[mod]) return;
+  const val = parseInt(inp.value);
+  if (isNaN(val)) { inp.focus(); return; }
+  if (val === ANS[mod]) {
+    correct(mod);
+    inp.disabled=true;
+    const box = document.getElementById(mod+'-box');
+    if(box){ box.classList.remove('err'); box.classList.add('filled'); }
+  } else {
+    const box = document.getElementById(mod+'-box');
+    if(box){ box.classList.add('err'); setTimeout(()=>box.classList.remove('err'),400); }
+    inp.value=''; inp.focus();
+    wrong(mod, null);
+  }
+}
+
+/* ── 答對 ── */
+function correct(mod) {
+  DONE[mod]=true;
+  streak[mod]++;
+  state[mod].score++;
+  const pts = streak[mod]>=3 ? 3 : 1;
+  totalXP+=pts;
+
+  const box=document.getElementById(mod+'-box');
+  if(box){ box.textContent=ANS[mod]; box.classList.add('filled'); }
+
+  const msgs = ['✅ 答對了！太棒了！','🎉 正確！好厲害！','⭐ 完美！繼續加油！','🚀 答對了！再一題！'];
+  let fb = msgs[Math.floor(Math.random()*msgs.length)];
+  if(streak[mod]>=3) fb += `　🔥 連對 ${streak[mod]} 題！+${pts}分`;
+  setFb(mod, fb, 'ok');
+  litStar(mod+'-stars', state[mod].score);
+  updateStreak(mod);
+  updateXP();
+  show(mod+'-next');
+  if(state[mod].score%5===0) launchFireworks();
+}
+
+/* ── 答錯 ── */
+function wrong(mod, btn) {
+  streak[mod]=0;
+  updateStreak(mod);
+  const hints=['❌ 再想想看！','💡 數數看再試試！','❌ 差一點，加油！'];
+  setFb(mod, hints[Math.floor(Math.random()*hints.length)], 'err');
+}
+
+/* ─── 乘法選擇器 ─── */
+function buildMulSel() {
+  const row = document.getElementById('mul-sel-row');
+  for(let i=2;i<=9;i++){
+    const btn=document.createElement('button');
+    btn.className='mul-sel-btn'+(i===2?' active':'');
+    btn.textContent=i;
+    btn.onclick=()=>{
+      mulFactor=i;
+      document.querySelectorAll('.mul-sel-btn').forEach(b=>b.classList.toggle('active',b===btn));
+      newQ('mul');
+    };
+    row.appendChild(btn);
+  }
+}
+
+/* ════════════════════════════
+   工具
+════════════════════════════ */
+function rand(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+
+function makeChoices(ans, max) {
+  const set=new Set([ans]);
+  const diffs=[-3,-2,-1,1,2,3];
+  shuffle(diffs);
+  for(const d of diffs){
+    if(set.size>=4) break;
+    const v=ans+d;
+    if(v>=0&&v<=max) set.add(v);
+  }
+  while(set.size<4){
+    const v=rand(Math.max(0,ans-5),Math.min(max,ans+5));
+    set.add(v);
+  }
+  return shuffle([...set]).slice(0,4);
+}
+
+function shuffle(a){ return a.sort(()=>Math.random()-.5); }
+
+function makeStars(id){
+  const el=document.getElementById(id);
+  if(!el) return;
+  el.innerHTML='';
+  for(let i=0;i<5;i++){
+    const s=document.createElement('span');
+    s.className='star'; s.dataset.i=i; s.textContent='★';
+    el.appendChild(s);
+  }
+}
+function litStar(id, score){
+  const el=document.getElementById(id);
+  if(!el) return;
+  const idx=(score-1)%5;
+  if(score>1&&(score-1)%5===0){
+    el.querySelectorAll('.star').forEach(s=>s.classList.remove('lit'));
+  }
+  const s=el.querySelector(`[data-i="${idx}"]`);
+  if(s) s.classList.add('lit');
+}
+function updateStreak(mod){
+  const el=document.getElementById(mod+'-streak');
+  if(el) el.textContent=`🔥 連對 ${streak[mod]}`;
+}
+function updateXP(){
+  document.getElementById('xp-label').textContent=`${totalXP} 分`;
+  const fill=document.getElementById('xp-fill');
+  fill.style.width=Math.min(100, totalXP)+'%';
+}
+function setFb(mod,msg,cls){
+  const el=document.getElementById(mod+'-fb');
+  if(el){ el.textContent=msg; el.className='fb'+( cls?' '+cls:''); }
+}
+function show(id){ const e=document.getElementById(id); if(e) e.style.display='inline-block'; }
+function hide(id){ const e=document.getElementById(id); if(e) e.style.display='none'; }
+
+/* ── 煙火 ── */
+const canvas=document.getElementById('canvas');
+const ctx=canvas.getContext('2d');
+let particles=[];
+function setupCanvas(){
+  const r=()=>{ canvas.width=innerWidth; canvas.height=innerHeight; };
+  r(); window.onresize=r;
+  (function loop(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles=particles.filter(p=>p.a>.03);
+    particles.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy; p.vy+=.08; p.a-=.018;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=p.c; ctx.globalAlpha=p.a; ctx.fill(); ctx.globalAlpha=1;
+    });
+    requestAnimationFrame(loop);
+  })();
+}
+function launchFireworks(){
+  const colors=['#4D96FF','#C77DFF','#FFD93D','#6BCB77','#FF6B6B','#FF9F43'];
+  for(let i=0;i<8;i++) setTimeout(()=>{
+    const x=canvas.width*(.15+Math.random()*.7), y=canvas.height*(.1+Math.random()*.4);
+    for(let j=0;j<50;j++){
+      const a=(Math.PI*2/50)*j,s=2+Math.random()*5;
+      particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,a:1,c:colors[~~(Math.random()*colors.length)],r:2+Math.random()*3});
+    }
+  },i*150);
+}
+</script>
+</body>
+</html>
