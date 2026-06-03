@@ -18,145 +18,50 @@
     --radius: 16px;
   }
   html { scroll-behavior: smooth; }
-  body {
-    font-family: 'Noto Sans TC', sans-serif;
-    background: var(--paper);
-    color: var(--ink);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+  body { font-family: 'Noto Sans TC', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; overflow-x: hidden; }
 
-  /* Header */
   header {
-    position: relative;
-    text-align: center;
+    position: relative; text-align: center;
     padding: 4rem 2rem 3rem;
-    background: var(--ink);
-    overflow: hidden;
+    background: var(--ink); overflow: hidden;
   }
   header::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 60% 40% at 20% 50%, rgba(201,138,46,0.18) 0%, transparent 70%),
-      radial-gradient(ellipse 50% 60% at 80% 30%, rgba(122,59,30,0.22) 0%, transparent 70%);
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 40% at 20% 50%, rgba(201,138,46,0.18) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 60% at 80% 30%, rgba(122,59,30,0.22) 0%, transparent 70%);
     pointer-events: none;
   }
   .header-deco {
-    position: absolute;
-    font-family: 'Noto Serif TC', serif;
-    font-weight: 900;
-    font-size: 14rem;
-    color: rgba(255,255,255,0.03);
-    top: -2rem; right: -1rem;
-    line-height: 1;
-    pointer-events: none; user-select: none;
+    position: absolute; font-family: 'Noto Serif TC', serif; font-weight: 900;
+    font-size: 14rem; color: rgba(255,255,255,0.03);
+    top: -2rem; right: -1rem; line-height: 1; pointer-events: none; user-select: none;
   }
   header h1 {
-    font-family: 'Noto Serif TC', serif;
-    font-weight: 900;
+    font-family: 'Noto Serif TC', serif; font-weight: 900;
     font-size: clamp(2.5rem, 6vw, 4.5rem);
-    color: var(--gold-light);
-    letter-spacing: 0.15em;
-    position: relative;
-    line-height: 1.1;
+    color: var(--gold-light); letter-spacing: 0.15em; position: relative; line-height: 1.1;
   }
-  header p {
-    margin-top: 1rem;
-    font-size: 1rem;
-    color: rgba(255,255,255,0.45);
-    font-weight: 300;
-    letter-spacing: 0.2em;
-    position: relative;
-  }
-  .header-line {
-    width: 60px; height: 2px;
-    background: var(--gold);
-    margin: 1.5rem auto 0;
-    position: relative;
-  }
+  header p { margin-top: 1rem; font-size: 1rem; color: rgba(255,255,255,0.45); font-weight: 300; letter-spacing: 0.2em; position: relative; }
+  .header-line { width: 60px; height: 2px; background: var(--gold); margin: 1.5rem auto 0; }
 
-  /* Nav */
-  nav {
-    display: flex;
-    justify-content: center;
-    background: var(--ink);
-    border-top: 1px solid rgba(255,255,255,0.06);
-    padding-bottom: 0.5rem;
-    flex-wrap: wrap;
-  }
-  nav a {
-    color: rgba(255,255,255,0.55);
-    text-decoration: none;
-    font-size: 0.85rem;
-    letter-spacing: 0.12em;
-    padding: 0.8rem 1.5rem;
-    transition: color 0.2s;
-    position: relative;
-  }
-  nav a::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 50%; right: 50%;
-    height: 2px;
-    background: var(--gold);
-    transition: left 0.2s, right 0.2s;
-  }
+  nav { display: flex; justify-content: center; background: var(--ink); border-top: 1px solid rgba(255,255,255,0.06); padding-bottom: 0.5rem; flex-wrap: wrap; }
+  nav a { color: rgba(255,255,255,0.55); text-decoration: none; font-size: 0.85rem; letter-spacing: 0.12em; padding: 0.8rem 1.5rem; transition: color 0.2s; position: relative; }
+  nav a::after { content: ''; position: absolute; bottom: 0; left: 50%; right: 50%; height: 2px; background: var(--gold); transition: left 0.2s, right 0.2s; }
   nav a:hover { color: var(--gold-light); }
   nav a:hover::after { left: 1.5rem; right: 1.5rem; }
 
-  /* Section label */
-  .section-label {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-  .section-label h2 {
-    font-family: 'Noto Serif TC', serif;
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: var(--accent);
-    white-space: nowrap;
-  }
-  .section-label::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(to right, var(--gold-light), transparent);
-  }
+  .section-label { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; }
+  .section-label h2 { font-family: 'Noto Serif TC', serif; font-size: 1.4rem; font-weight: 700; color: var(--accent); white-space: nowrap; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, var(--gold-light), transparent); }
 
-  /* Main */
   main { max-width: 1100px; margin: 0 auto; padding: 3rem 1.5rem 4rem; }
   section { margin-bottom: 4rem; }
 
-  /* Learning cards */
-  .cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1.25rem;
-  }
-  .card {
-    background: #fff;
-    border: 1px solid rgba(201,138,46,0.2);
-    border-radius: var(--radius);
-    overflow: hidden;
-    text-decoration: none;
-    color: inherit;
-    transition: transform 0.25s, box-shadow 0.25s;
-    display: flex;
-    flex-direction: column;
-    cursor: pointer;
-  }
+  /* Cards */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; }
+  .card { background: #fff; border: 1px solid rgba(201,138,46,0.2); border-radius: var(--radius); overflow: hidden; text-decoration: none; color: inherit; transition: transform 0.25s, box-shadow 0.25s; display: flex; flex-direction: column; cursor: pointer; }
   .card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(26,16,8,0.1); }
-  .card-thumb {
-    height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.5rem;
-  }
+  .card-thumb { height: 80px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
   .card-thumb.c1 { background: linear-gradient(135deg,#fdf0d5,#f5d9a0); }
   .card-thumb.c2 { background: linear-gradient(135deg,#d5f0e8,#9de0c4); }
   .card-thumb.c3 { background: linear-gradient(135deg,#d5e8f0,#9dc4e0); }
@@ -164,33 +69,11 @@
   .card-body { padding: 1rem 1.1rem 1.1rem; flex: 1; display: flex; flex-direction: column; }
   .card-body h3 { font-family: 'Noto Serif TC', serif; font-size: 1rem; font-weight: 700; color: var(--ink); margin-bottom: 0.4rem; }
   .card-body p { font-size: 0.8rem; color: var(--muted); line-height: 1.6; flex: 1; }
-  .card-tag {
-    display: inline-block;
-    margin-top: 0.75rem;
-    font-size: 0.7rem;
-    letter-spacing: 0.08em;
-    background: var(--paper2);
-    color: var(--accent);
-    border-radius: 99px;
-    padding: 0.2rem 0.6rem;
-  }
+  .card-tag { display: inline-block; margin-top: 0.75rem; font-size: 0.7rem; letter-spacing: 0.08em; background: var(--paper2); color: var(--accent); border-radius: 99px; padding: 0.2rem 0.6rem; }
 
-  /* Iframe viewer */
-  .viewer-wrap {
-    background: #fff;
-    border: 1px solid rgba(201,138,46,0.2);
-    border-radius: var(--radius);
-    overflow: hidden;
-    box-shadow: 0 4px 24px rgba(26,16,8,0.06);
-  }
-  .viewer-bar {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.65rem 1rem;
-    background: var(--ink);
-    flex-wrap: wrap;
-  }
+  /* Viewer */
+  .viewer-wrap { background: #fff; border: 1px solid rgba(201,138,46,0.2); border-radius: var(--radius); overflow: hidden; box-shadow: 0 4px 24px rgba(26,16,8,0.06); }
+  .viewer-bar { display: flex; align-items: center; gap: 0.5rem; padding: 0.65rem 1rem; background: var(--ink); flex-wrap: wrap; }
   .viewer-dots { display: flex; gap: 5px; }
   .viewer-dots span { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.15); }
   .viewer-url { flex: 1; font-size: 0.72rem; color: rgba(255,255,255,0.4); font-family: monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
@@ -200,12 +83,8 @@
   #viewer-section { display: none; }
   #viewer-section.active { display: block; }
 
-  /* Photos section */
-  .albums-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-  }
+  /* Album cards — NO iframe */
+  .albums-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
 
   .album-card {
     background: #fff;
@@ -213,103 +92,108 @@
     border-radius: var(--radius);
     overflow: hidden;
     box-shadow: 0 2px 12px rgba(26,16,8,0.05);
-    transition: box-shadow 0.25s;
+    transition: transform 0.25s, box-shadow 0.25s;
+    display: flex; flex-direction: column;
   }
-  .album-card:hover { box-shadow: 0 8px 28px rgba(26,16,8,0.1); }
+  .album-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(26,16,8,0.1); }
 
-  .album-header {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.9rem 1.1rem;
-    background: var(--ink);
-  }
-  .album-icon {
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.2rem;
-    flex-shrink: 0;
-  }
-  .album-icon.samba { background: rgba(201,138,46,0.25); }
-  .album-icon.nana  { background: rgba(122,59,30,0.35); }
-  .album-header-text h3 {
-    font-family: 'Noto Serif TC', serif;
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--gold-light);
-    margin-bottom: 0.1rem;
-  }
-  .album-header-text p {
-    font-size: 0.72rem;
-    color: rgba(255,255,255,0.4);
-    letter-spacing: 0.05em;
-  }
-
-  .album-frame-wrap { position: relative; }
-  .album-frame-wrap iframe {
-    width: 100%;
-    height: 420px;
-    border: none;
+  /* Cover image — clickable */
+  .album-cover {
+    position: relative;
     display: block;
-  }
-  .album-loading {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    aspect-ratio: 16/9;
     background: var(--paper2);
-    flex-direction: column;
-    gap: 0.75rem;
-    font-size: 0.82rem;
-    color: var(--muted);
-    pointer-events: none;
-    transition: opacity 0.4s;
-  }
-  .spinner {
-    width: 28px; height: 28px;
-    border: 2px solid rgba(201,138,46,0.2);
-    border-top-color: var(--gold);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .album-footer {
-    padding: 0.65rem 1rem;
-    border-top: 1px solid rgba(201,138,46,0.12);
-    display: flex;
-    justify-content: flex-end;
-  }
-  .album-link {
-    font-size: 0.75rem;
-    color: var(--accent);
     text-decoration: none;
-    letter-spacing: 0.05em;
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    opacity: 0.7;
-    transition: opacity 0.2s;
   }
-  .album-link:hover { opacity: 1; }
+  .album-cover img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s;
+  }
+  .album-cover:hover img { transform: scale(1.04); }
 
-  /* Footer */
-  footer {
-    text-align: center;
-    padding: 2rem;
-    font-size: 0.75rem;
-    color: var(--muted);
-    border-top: 1px solid rgba(201,138,46,0.15);
-    letter-spacing: 0.1em;
+  /* Overlay play button */
+  .cover-overlay {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(26,16,8,0.22);
+    transition: background 0.3s;
   }
+  .album-cover:hover .cover-overlay { background: rgba(26,16,8,0.38); }
+  .play-btn {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.92);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    transition: transform 0.2s;
+  }
+  .album-cover:hover .play-btn { transform: scale(1.1); }
+
+  /* Date badge on cover */
+  .date-badge {
+    position: absolute; bottom: 10px; left: 12px;
+    background: rgba(26,16,8,0.65);
+    color: rgba(255,255,255,0.85);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    padding: 0.2rem 0.6rem;
+    border-radius: 99px;
+    backdrop-filter: blur(4px);
+  }
+
+  /* Album body */
+  .album-body { padding: 1.1rem 1.2rem 1.2rem; flex: 1; display: flex; flex-direction: column; gap: 0.75rem; }
+  .album-body-top { display: flex; align-items: center; gap: 0.7rem; }
+  .album-icon { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+  .album-icon.simba { background: #fdf0d5; }
+  .album-icon.nana  { background: #f0d5e8; }
+  .album-body h3 { font-family: 'Noto Serif TC', serif; font-size: 1rem; font-weight: 700; color: var(--ink); }
+  .album-body p { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+
+  .open-btn {
+    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    background: var(--ink);
+    color: var(--gold-light);
+    text-decoration: none;
+    border-radius: 10px;
+    padding: 0.7rem 1rem;
+    font-size: 0.85rem;
+    font-family: 'Noto Sans TC', sans-serif;
+    letter-spacing: 0.08em;
+    transition: background 0.2s;
+    margin-top: auto;
+  }
+  .open-btn:hover { background: var(--accent); }
+  .open-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+  .albums-links { display: flex; flex-direction: column; gap: 0.75rem; }
+  .album-link-row {
+    display: flex; align-items: center; gap: 1rem;
+    background: #fff;
+    border: 1px solid rgba(201,138,46,0.22);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    text-decoration: none; color: inherit;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .album-link-row:hover { transform: translateX(4px); box-shadow: 0 4px 20px rgba(26,16,8,0.08); }
+  .alr-icon { font-size: 2rem; flex-shrink: 0; }
+  .alr-text { flex: 1; display: flex; flex-direction: column; gap: 0.2rem; }
+  .alr-text strong { font-family: 'Noto Serif TC', serif; font-size: 1rem; font-weight: 700; color: var(--ink); }
+  .alr-text small { font-size: 0.78rem; color: var(--muted); }
+  .alr-arrow { font-size: 1.2rem; color: var(--gold); flex-shrink: 0; }
+
+  footer { text-align: center; padding: 2rem; font-size: 0.75rem; color: var(--muted); border-top: 1px solid rgba(201,138,46,0.15); letter-spacing: 0.1em; }
 
   @media (max-width: 600px) {
     header { padding: 2.5rem 1rem 2rem; }
     .header-deco { display: none; }
     #viewer-frame { height: 420px; }
-    .album-frame-wrap iframe { height: 320px; }
   }
 </style>
 </head>
@@ -368,7 +252,7 @@
     </div>
   </section>
 
-  <!-- Iframe Viewer -->
+  <!-- Viewer -->
   <section id="viewer-section">
     <div class="section-label"><h2 id="viewer-title">載入中…</h2></div>
     <div class="viewer-wrap">
@@ -385,64 +269,23 @@
   <section id="photos">
     <div class="section-label"><h2>相簿回憶</h2></div>
 
-    <div class="albums-grid">
-
-      <!-- 辛巴 -->
-      <div class="album-card">
-        <div class="album-header">
-          <div class="album-icon samba">🦁</div>
-          <div class="album-header-text">
-            <h3>辛巴的成長紀錄</h3>
-            <p>2019 年 11 月 — 2025 年 1 月</p>
-          </div>
-        </div>
-        <div class="album-frame-wrap">
-          <div class="album-loading" id="loading-simba">
-            <div class="spinner"></div>
-            <span>相簿載入中…</span>
-          </div>
-          <iframe
-            src="https://photos.google.com/share/AF1QipOenFwnNuXeFYM29RqzP1wik_um_Zfa6E50tAYHe2efb8c5xjqtJczN2XcvWNFhZg?key=MjU2X2ZDbkNBSHJ5dHRpajNEYk55cGoybk90MDhB"
-            title="辛巴相簿"
-            onload="hideLoading('loading-simba')"
-            allowfullscreen
-          ></iframe>
-        </div>
-        <div class="album-footer">
-          <a class="album-link" href="https://photos.app.goo.gl/65FFZYPo9LFFyiWdA" target="_blank" rel="noopener">
-            在 Google 相簿開啟 ↗
-          </a>
-        </div>
-      </div>
-
-      <!-- 娜娜 -->
-      <div class="album-card">
-        <div class="album-header">
-          <div class="album-icon nana">🐾</div>
-          <div class="album-header-text">
-            <h3>娜娜的成長紀錄</h3>
-            <p>2020 年 1 月 — 2025 年 1 月</p>
-          </div>
-        </div>
-        <div class="album-frame-wrap">
-          <div class="album-loading" id="loading-nana">
-            <div class="spinner"></div>
-            <span>相簿載入中…</span>
-          </div>
-          <iframe
-            src="https://photos.google.com/share/AF1QipMjzpNA04FjfxEJUPOoGTotwOjEprPFI8ldAE1sJnrvQAB10n-XQiZLig1MhrROJw?key=U054S3NyZ0p1VVdXZGdiOVpNQkJ1WjNHVHNUOTJn"
-            title="娜娜相簿"
-            onload="hideLoading('loading-nana')"
-            allowfullscreen
-          ></iframe>
-        </div>
-        <div class="album-footer">
-          <a class="album-link" href="https://photos.app.goo.gl/GtY6JzWeCPAfZUj99" target="_blank" rel="noopener">
-            在 Google 相簿開啟 ↗
-          </a>
-        </div>
-      </div>
-
+    <div class="albums-links">
+      <a class="album-link-row" href="https://photos.app.goo.gl/65FFZYPo9LFFyiWdA" target="_blank" rel="noopener">
+        <span class="alr-icon">🦁</span>
+        <span class="alr-text">
+          <strong>辛巴的成長紀錄</strong>
+          <small>2019.11 — 2025.01</small>
+        </span>
+        <span class="alr-arrow">↗</span>
+      </a>
+      <a class="album-link-row" href="https://photos.app.goo.gl/GtY6JzWeCPAfZUj99" target="_blank" rel="noopener">
+        <span class="alr-icon">🐾</span>
+        <span class="alr-text">
+          <strong>娜娜的成長紀錄</strong>
+          <small>2020.01 — 2025.01</small>
+        </span>
+        <span class="alr-arrow">↗</span>
+      </a>
     </div>
   </section>
 
@@ -459,16 +302,12 @@ function openViewer(url, title) {
   sec.classList.add('active');
   sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
-
 function closeViewer() {
   document.getElementById('viewer-section').classList.remove('active');
   document.getElementById('viewer-frame').src = '';
 }
 
-function hideLoading(id) {
-  const el = document.getElementById(id);
-  if (el) { el.style.opacity = '0'; setTimeout(() => el.style.display = 'none', 400); }
-}
+// covers already set via HTML src; onerror hides broken images gracefully
 </script>
 </body>
 </html>
