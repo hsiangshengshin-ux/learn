@@ -4,7 +4,181 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>注音符號練習</title>
+<link href="https://fonts.googleapis.com/css2<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>注音符號練習</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFF8F0;--card:#fff;--ink:#2C1810;--accent:#E84855;--accent2:#3A86FF;--accent3:#06D6A0;--accent4:#FFB703;--border:#E8D5C4;--shadow:0 4px 20px rgba(44,24,16,.10);--r:18px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:'Nunito','Noto Serif TC',sans-serif;min-height:100vh}
+header{background:var(--ink);color:#FFF8F0;padding:28px 24px 20px;text-align:center;position:relative;overflow:hidden}
+header::before{content:'ㄅㄆㄇㄈ';position:absolute;font-size:120px;opacity:.05;top:-20px;left:-10px;font-family:'Noto Serif TC',serif;line-height:1;pointer-events:none}
+header h1{font-family:'Noto Serif TC',serif;font-size:clamp(28px,5vw,44px);font-weight:900;letter-spacing:.05em;position:relative}
+header p{margin-top:6px;font-size:14px;opacity:.7;letter-spacing:.1em}
+.tabs{display:flex;justify-content:center;gap:10px;padding:20px 16px 10px;flex-wrap:wrap}
+.tab-btn{padding:10px 22px;border-radius:99px;border:2px solid var(--ink);background:transparent;color:var(--ink);font-family:'Noto Serif TC',serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .18s}
+.tab-btn.active,.tab-btn:hover{background:var(--ink);color:var(--bg)}
+.grid-section{max-width:1080px;margin:0 auto;padding:16px 16px 32px}
+.group-label{font-family:'Noto Serif TC',serif;font-size:13px;font-weight:700;letter-spacing:.2em;color:var(--accent);margin:24px 0 10px 4px;display:flex;align-items:center;gap:8px}
+.group-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.sound-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:12px}
+.sound-card{background:var(--card);border-radius:var(--r);border:2px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px 8px 14px;cursor:pointer;transition:all .18s cubic-bezier(.34,1.56,.64,1);position:relative;user-select:none;box-shadow:0 2px 8px rgba(44,24,16,.06)}
+.sound-card:hover{transform:translateY(-4px) scale(1.04);box-shadow:var(--shadow);border-color:var(--accent)}
+.sound-card.playing{background:var(--ink);border-color:var(--ink);color:var(--bg);transform:scale(.97)}
+.bopo{font-family:'Noto Serif TC',serif;font-size:clamp(28px,5vw,36px);font-weight:900;line-height:1.1}
+.pinyin{font-size:11px;margin-top:4px;opacity:.45;letter-spacing:.05em}
+.wave{position:absolute;bottom:6px;display:flex;gap:2px;align-items:flex-end;height:10px;opacity:0;transition:opacity .2s}
+.sound-card.playing .wave{opacity:1}
+.wave span{display:block;width:3px;background:var(--accent4);border-radius:2px;animation:wa .5s ease-in-out infinite alternate}
+.wave span:nth-child(2){animation-delay:.1s}.wave span:nth-child(3){animation-delay:.2s}.wave span:nth-child(4){animation-delay:.15s}.wave span:nth-child(5){animation-delay:.05s}
+@keyframes wa{from{height:3px}to{height:10px}}
+.quiz-section{max-width:540px;margin:0 auto;padding:20px 16px 48px;display:none;flex-direction:column;align-items:center;gap:20px}
+.quiz-section.active{display:flex}
+.quiz-prompt{background:var(--ink);color:var(--bg);border-radius:24px;padding:32px 40px;text-align:center;width:100%;cursor:pointer;transition:transform .12s;box-shadow:var(--shadow)}
+.quiz-prompt:hover{transform:scale(1.02)}
+.quiz-prompt .label{font-size:13px;opacity:.5;letter-spacing:.15em;margin-bottom:8px}
+.big{font-family:'Noto Serif TC',serif;font-size:72px;font-weight:900;line-height:1}
+.quiz-prompt .hint{font-size:12px;margin-top:12px;opacity:.45}
+.quiz-choices{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%}
+.choice-btn{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:22px 10px;font-family:'Noto Serif TC',serif;font-size:32px;font-weight:900;cursor:pointer;transition:all .18s;box-shadow:0 2px 8px rgba(44,24,16,.06)}
+.choice-btn:hover{border-color:var(--accent2);transform:translateY(-2px)}
+.choice-btn.correct{background:var(--accent3);border-color:var(--accent3);color:#fff}
+.choice-btn.wrong{background:var(--accent);border-color:var(--accent);color:#fff;animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.quiz-score{font-size:14px;font-weight:700;letter-spacing:.1em;opacity:.6}
+.quiz-controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.btn{padding:10px 24px;border-radius:99px;border:2px solid var(--ink);background:var(--ink);color:var(--bg);font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;letter-spacing:.05em}
+.btn:hover{opacity:.8}
+.btn.outline{background:transparent;color:var(--ink)}
+.btn.outline:hover{background:var(--ink);color:var(--bg)}
+.cat-filters{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:0 16px 4px;max-width:1080px;margin:0 auto}
+.cat-btn{padding:6px 16px;border-radius:99px;border:1.5px solid var(--border);background:var(--card);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;color:var(--ink)}
+.cat-btn.active,.cat-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.hidden{display:none!important}
+
+/* 新增：倒數提示樣式 */
+.countdown-tip {
+  font-size: 14px;
+  color: var(--accent2);
+  font-weight: 700;
+  margin-top: 5px;
+  min-height: 20px;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>注音符號練習</h1>
+  <p>點擊聆聽發音 · 測驗模式挑戰自己</p>
+</header>
+<div class="tabs">
+  <button class="tab-btn active" onclick="setMode('browse')">📖 瀏覽練習</button>
+  <button class="tab-btn" onclick="setMode('quiz')">🎯 測驗模式</button>
+</div>
+<div class="grid-section" id="browseSection">
+  <div class="cat-filters">
+    <button class="cat-btn active" onclick="setCat(this,'all')">全部</button>
+    <button class="cat-btn" onclick="setCat(this,'consonant')">聲母（21個）</button>
+    <button class="cat-btn" onclick="setCat(this,'vowel_simple')">韻母單音（13個）</button>
+    <button class="cat-btn" onclick="setCat(this,'vowel_compound')">結合韻母（24個）</button>
+  </div>
+  <div class="group-label" data-cat="consonant">聲母</div>
+  <div class="sound-grid" data-cat="consonant">
+    <div class="sound-card" onclick="playSound('ㄅ',this)" data-cat="consonant"><span class="bopo">ㄅ</span><span class="pinyin">b</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄆ',this)" data-cat="consonant"><span class="bopo">ㄆ</span><span class="pinyin">p</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄇ',this)" data-cat="consonant"><span class="bopo">ㄇ</span><span class="pinyin">m</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄈ',this)" data-cat="consonant"><span class="bopo">ㄈ</span><span class="pinyin">f</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄉ',this)" data-cat="consonant"><span class="bopo">ㄉ</span><span class="pinyin">d</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄊ',this)" data-cat="consonant"><span class="bopo">ㄊ</span><span class="pinyin">t</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄋ',this)" data-cat="consonant"><span class="bopo">ㄋ</span><span class="pinyin">n</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄌ',this)" data-cat="consonant"><span class="bopo">ㄌ</span><span class="pinyin">l</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄍ',this)" data-cat="consonant"><span class="bopo">ㄍ</span><span class="pinyin">g</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄎ',this)" data-cat="consonant"><span class="bopo">ㄎ</span><span class="pinyin">k</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄏ',this)" data-cat="consonant"><span class="bopo">ㄏ</span><span class="pinyin">h</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄐ',this)" data-cat="consonant"><span class="bopo">ㄐ</span><span class="pinyin">j</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄑ',this)" data-cat="consonant"><span class="bopo">ㄑ</span><span class="pinyin">q</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄒ',this)" data-cat="consonant"><span class="bopo">ㄒ</span><span class="pinyin">x</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄓ',this)" data-cat="consonant"><span class="bopo">ㄓ</span><span class="pinyin">zh</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄔ',this)" data-cat="consonant"><span class="bopo">ㄔ</span><span class="pinyin">ch</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄕ',this)" data-cat="consonant"><span class="bopo">ㄕ</span><span class="pinyin">sh</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄖ',this)" data-cat="consonant"><span class="bopo">ㄖ</span><span class="pinyin">r</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄗ',this)" data-cat="consonant"><span class="bopo">ㄗ</span><span class="pinyin">z</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄘ',this)" data-cat="consonant"><span class="bopo">ㄘ</span><span class="pinyin">c</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄙ',this)" data-cat="consonant"><span class="bopo">ㄙ</span><span class="pinyin">s</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+  </div>
+  <div class="group-label" data-cat="vowel_simple">韻母單音</div>
+  <div class="sound-grid" data-cat="vowel_simple">
+    <div class="sound-card" onclick="playSound('ㄚ',this)" data-cat="vowel_simple"><span class="bopo">ㄚ</span><span class="pinyin">a</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄛ',this)" data-cat="vowel_simple"><span class="bopo">ㄛ</span><span class="pinyin">o</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄜ',this)" data-cat="vowel_simple"><span class="bopo">ㄜ</span><span class="pinyin">e</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄝ',this)" data-cat="vowel_simple"><span class="bopo">ㄝ</span><span class="pinyin">ê</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄞ',this)" data-cat="vowel_simple"><span class="bopo">ㄞ</span><span class="pinyin">ai</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄟ',this)" data-cat="vowel_simple"><span class="bopo">ㄟ</span><span class="pinyin">ei</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄠ',this)" data-cat="vowel_simple"><span class="bopo">ㄠ</span><span class="pinyin">ao</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄡ',this)" data-cat="vowel_simple"><span class="bopo">ㄡ</span><span class="pinyin">ou</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄢ',this)" data-cat="vowel_simple"><span class="bopo">ㄢ</span><span class="pinyin">an</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="mouseout="playSound('ㄣ',this)" data-cat="vowel_simple" onclick="playSound('ㄣ',this)"><span class="bopo">ㄣ</span><span class="pinyin">en</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄤ',this)" data-cat="vowel_simple"><span class="bopo">ㄤ</span><span class="pinyin">ang</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄥ',this)" data-cat="vowel_simple"><span class="bopo">ㄥ</span><span class="pinyin">eng</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄦ',this)" data-cat="vowel_simple"><span class="bopo">ㄦ</span><span class="pinyin">er</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+  </div>
+  <div class="group-label" data-cat="vowel_compound">ㄧ 結合韻母</div>
+  <div class="sound-grid" data-cat="vowel_compound">
+    <div class="sound-card" onclick="playSound('ㄧ',this)" data-cat="vowel_compound"><span class="bopo">ㄧ</span><span class="pinyin">yi</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄧㄚ',this)" data-cat="vowel_compound"><span class="bopo">ㄧㄚ</span><span class="pinyin">ya</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄧㄛ',this)" data-cat="vowel_compound"><span class="bopo">ㄧㄛ</span><span class="pinyin">yo</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄧㄝ',this)" data-cat="vowel_compound"><span class="bopo">ㄧㄝ</span><span class="pinyin">ye</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄧㄠ',this)" data-cat="vowel_compound"><span class="bopo">ㄧㄠ</span><span class="pinyin">yao</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄧㄡ',this)" data-cat="vowel_compound"><span class="bopo">ㄧㄡ</span><span class="pinyin">you</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄧㄢ',this)" data-cat="vowel_compound"><span class="bopo">ㄧㄢ</span><span class="pinyin">yan</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄧㄣ',this)" data-cat="vowel_compound"><span class="bopo">ㄧㄣ</span><span class="pinyin">yin</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄧㄤ',this)" data-cat="vowel_compound"><span class="bopo">ㄧㄤ</span><span class="pinyin">yang</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄧㄥ',this)" data-cat="vowel_compound"><span class="bopo">ㄧㄥ</span><span class="pinyin">ying</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+  </div>
+  <div class="group-label" data-cat="vowel_compound">ㄨ 結合韻母</div>
+  <div class="sound-grid" data-cat="vowel_compound">
+    <div class="sound-card" onclick="playSound('ㄨ',this)" data-cat="vowel_compound"><span class="bopo">ㄨ</span><span class="pinyin">wu</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄨㄚ',this)" data-cat="vowel_compound"><span class="bopo">ㄨㄚ</span><span class="pinyin">wa</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄨㄛ',this)" data-cat="vowel_compound"><span class="bopo">ㄨㄛ</span><span class="pinyin">wo</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄨㄞ',this)" data-cat="vowel_compound"><span class="bopo">ㄨㄞ</span><span class="pinyin">wai</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄨㄟ',this)" data-cat="vowel_compound"><span class="bopo">ㄨㄟ</span><span class="pinyin">wei</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄨㄢ',this)" data-cat="vowel_compound"><span class="bopo">ㄨㄢ</span><span class="pinyin">wan</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄨㄣ',this)" data-cat="vowel_compound"><span class="bopo">ㄨㄣ</span><span class="pinyin">wen</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄨㄤ',this)" data-cat="vowel_compound"><span class="bopo">ㄨㄤ</span><span class="pinyin">wang</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄨㄥ',this)" data-cat="vowel_compound"><span class="bopo">ㄨㄥ</span><span class="pinyin">weng</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+  </div>
+  <div class="group-label" data-cat="vowel_compound">ㄩ 結合韻母</div>
+  <div class="sound-grid" data-cat="vowel_compound">
+    <div class="sound-card" onclick="playSound('ㄩ',this)" data-cat="vowel_compound"><span class="bopo">ㄩ</span><span class="pinyin">yu</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄩㄝ',this)" data-cat="vowel_compound"><span class="bopo">ㄩㄝ</span><span class="pinyin">yue</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄩㄢ',this)" data-cat="vowel_compound"><span class="bopo">ㄩㄢ</span><span class="pinyin">yuan</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄩㄣ',this)" data-cat="vowel_compound"><span class="bopo">ㄩㄣ</span><span class="pinyin">yun</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="sound-card" onclick="playSound('ㄩㄥ',this)" data-cat="vowel_compound"><span class="bopo">ㄩㄥ</span><span class="pinyin">yong</span><div class="wave"><span></span><span></span><span></span><span></span><span></span></div></div>
+  </div>
+</div>
+<div class="quiz-section" id="quizSection">
+  <div class="quiz-score" id="quizScore">得分：0 / 0</div>
+  <div class="quiz-prompt" onclick="replayQuiz()">
+    <div class="label">點擊重新播放</div>
+    <div class="big" id="quizChar">🔊</div>
+    <div class="hint">聆聽聲音後，選出正確的注音符號</div>
+  </div>
+  <!-- 新增：倒數跳題文字區塊 -->
+  <div class="countdown-tip" id="countdownTip"></div>
+  <div class="quiz-choices" id="quizChoices"></div>
+  <div class="quiz-controls">
+    <button class="btn" onclick="nextQuiz()">下一題 →</button>
+    <button class="btn outline" onclick="resetScore()">重置分數</button>
+  </div>
+</div>
+<script>
+// 音訊與資料基礎定義
+const D={"ㄅ":"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慢			YFtdZonxu7NT/rSVfECju8kwbPbApQoHZb+jpIEE7IBIuadmeinCc5cfSe2hMEPH3T/o/biG4iCcmJyBMdMpcKOngQUAgEi53RIQjydPVoedZIw1ULH0Omo6USRQmMOxMop0Uvcx8FQgo6GBBRSASLl/yxBJhqx6W+rbukZyBn9JrN/BZFzQ7/3LQmSjqIEFKIBIuA7xiciryQZsIxPlst+CxKOJ7n/16/AKtzHTX414jsRHRICjp4EFPIBIuBdEUMqPBR3CeXVKhQQ7wuWbWyJ2ZpF78+sNdmMSj2BEgKOigQVQgEi5htvkXP8EJib8GPmlIFF3SDG5T0kSHKuUjEfXwKOngQVkgEi4sVzW5LExTdpfFIGPOZbtaapDfydpAvAQPax05Tt6QYh4o6OBBXiASLnuXW5aKiKiDCExXbhcNivDF4Mjs07w3+cvrj0KHKOfgQWMgEi6Ou82p55XezHMWPKTWw/xldCq9Ae0DpJPYKOmgQWggEi5qsytD9DJFW11JO0fd0UTMuhd20bH0M43kmEiyy2ihmGjn4EFtIBIujZMQGr0pA/JABIz08CL66eT6+expsJrDtSjoIEFyIBIuIzjBeGoVPQALusjLU9aDRmjVWQaAhUUjy/Ko56BBdyASLaZTEA+yYvlMUDxfXUJ+obp6tAmQu32QQmjoYEF8IBIP2VmGmsoeb16zLO/tgb2XlIO1tFiyobL7Eg1gKOggQYEgEg/XeTWzOzdFaNIMjmLmJAEVIR2ht56xmcz83Sjn4EGGIBIP108t+MbFesL4Hw035ey1DhS8uTYLweo/tKjooEGLIBIPwmA8k43+78X9mh3oOnFnQZ74PfG15VXHwRIpwajnYEGQIBIPsWZiNzRNkKA9XK0ON+/RSilDZNiE1izo6GBBlSASD4ZGUIiKlycbCYRHwpcxAPas2jzNAgro+rov4Cjn4EGaIBIPcIRsAg1sdK9Ac/1EoiS8pWotRwyRm0hPpCjloEGfIBIBjTA4zs2nK38ijB5N/Hte0yjn4EGkIBIPRoGESIj1+KJSLTm5gWZFjJv4OIPxQ20VuCjnYEGpIBIPQP2vh92q+UegutSQwo7TgY4uN1fD2rwo5yBBriASD0eIIIkoaA/wT+QrgByxxl9rOJKko6go5qBBsyASD0QDgWTITSce32BBWfZ+PXE/9N1wKOfgQbggEg8yxe4ACo2Z1yr+kYJSoMVngYAVsNGUa+9cKOVgQb0gEgGItLbUTDn6e7UGcRMYeMGo5uBBwiASDysEloeK8wLZao9U53Ho+ZdHhcVK7ajnoEHHIBIO10bzXP1gzS11kfAAiemkGG484pu+wLm0KCfoZaBBzAASAXvYAKjIrTN8tOnXlEF+FKAdaKEAP6hjBxTu2uRu4+zgQi3iveBAfGCAmvwgQM=","ㄆ":"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幕依昆蟲化身？」「不，他是個真正的妖精，一個被尊稱為大人的存在。」?family=Noto+Serif+TC:wght@400;700;900&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#FFF8F0;--card:#fff;--ink:#2C1810;--accent:#E84855;--accent2:#3A86FF;--accent3:#06D6A0;--accent4:#FFB703;--border:#E8D5C4;--shadow:0 4px 20px rgba(44,24,16,.10);--r:18px}
 *{box-sizing:border-box;margin:0;padding:0}
