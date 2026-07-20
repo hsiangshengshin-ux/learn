@@ -3,7 +3,633 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>注音符號練習</title><!DOCTYPE html>
+<title>注音符號練習</title><!DOCTYPE html><!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注音符號學習與測驗</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;900&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #FFF8F0;
+            --main-color: #2C1810;
+            --accent-red: #E84855;
+            --accent-blue: #3A86FF;
+            --accent-green: #06D6A0;
+            --card-bg: #FFFFFF;
+            --shadow: 0 8px 24px rgba(44, 24, 16, 0.08);
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Nunito', 'Noto Serif TC', serif;
+            background-color: var(--bg-color);
+            color: var(--main-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        header h1 {
+            font-size: clamp(1.8rem, 5vw, 2.8rem);
+            font-weight: 900;
+            color: var(--main-color);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .watermark {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 5rem;
+            opacity: 0.03;
+            z-index: -1;
+            font-weight: 900;
+            white-space: nowrap;
+        }
+
+        .tabs {
+            display: flex;
+            background: rgba(44, 24, 16, 0.04);
+            padding: 6px;
+            border-radius: 30px;
+            margin-bottom: 25px;
+            gap: 5px;
+        }
+
+        .tab-btn {
+            border: none;
+            background: none;
+            padding: 10px 24px;
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--main-color);
+            opacity: 0.6;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: var(--card-bg);
+            opacity: 1;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            color: var(--accent-blue);
+        }
+
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+            max-width: 600px;
+        }
+
+        .cat-btn {
+            border: 2px solid rgba(44, 24, 16, 0.1);
+            background: var(--card-bg);
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--main-color);
+        }
+
+        .cat-btn.active {
+            background: var(--main-color);
+            color: var(--bg-color);
+            border-color: var(--main-color);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 110px));
+            gap: 16px;
+            justify-content: center;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s ease;
+            border: 2px solid transparent;
+            user-select: none;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(44, 24, 16, 0.12);
+        }
+
+        .card:active, .card.playing {
+            transform: scale(0.95);
+        }
+
+        .card.playing {
+            border-color: var(--accent-blue);
+        }
+
+        .char {
+            font-size: 2.8rem;
+            font-weight: 900;
+            margin-bottom: 4px;
+        }
+
+        .wave-anim {
+            display: none;
+            position: absolute;
+            bottom: 12px;
+            gap: 3px;
+        }
+
+        .card.playing .wave-anim {
+            display: flex;
+        }
+
+        .wave-bar {
+            width: 3px;
+            height: 8px;
+            background: var(--accent-blue);
+            border-radius: 2px;
+            animation: bounce 0.5s ease-in-out infinite alternate;
+        }
+        .wave-bar:nth-child(2) { animation-delay: 0.15s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes bounce {
+            0% { transform: scaleY(1); }
+            100% { transform: scaleY(2.5); }
+        }
+
+        /* 測驗模式樣式 */
+        .quiz-panel {
+            display: none;
+            width: 100%;
+            max-width: 600px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            font-weight: 800;
+        }
+
+        .score-box {
+            background: rgba(58, 134, 255, 0.1);
+            color: var(--accent-blue);
+            padding: 6px 16px;
+            border-radius: 20px;
+        }
+
+        .audio-trigger {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--accent-blue);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(58, 134, 255, 0.3);
+            margin: 20px auto 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .audio-trigger:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 24px rgba(58, 134, 255, 0.4);
+        }
+
+        .audio-trigger:active {
+            transform: scale(0.95);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 25px;
+        }
+
+        .option-btn {
+            background: var(--bg-color);
+            border: 2px solid transparent;
+            padding: 16px;
+            font-size: 2rem;
+            font-weight: 900;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-family: 'Noto Serif TC', serif;
+            transition: all 0.2s ease;
+            color: var(--main-color);
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background: #FFF0E0;
+            transform: translateY(-2px);
+        }
+
+        .option-btn.correct {
+            background: var(--accent-green) !important;
+            color: white !important;
+            border-color: var(--accent-green);
+        }
+
+        .option-btn.wrong {
+            background: var(--accent-red) !important;
+            color: white !important;
+            border-color: var(--accent-red);
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+
+        .quiz-controls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .ctrl-btn {
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 800;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .next-btn {
+            background: var(--main-color);
+            color: var(--bg-color);
+        }
+
+        .next-btn:hover { opacity: 0.9; }
+
+        .reset-btn {
+            background: rgba(44, 24, 16, 0.06);
+            color: var(--main-color);
+        }
+
+        .reset-btn:hover { background: rgba(44, 24, 16, 0.1); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="watermark">ㄅㄆㄇㄈ</div>
+        <h1>注音符號隨身聽</h1>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="setMode('learn')">瀏覽練習</button>
+        <button class="tab-btn" onclick="setMode('quiz')">聽力測驗</button>
+    </div>
+
+    <!-- 瀏覽模式組件 -->
+    <div id="learn-ui">
+        <div class="categories">
+            <button class="cat-btn active" onclick="setCat(this, 'all')">全部</button>
+            <button class="cat-btn" onclick="setCat(this, '聲母')">聲母</button>
+            <button class="cat-btn" onclick="setCat(this, '韻母')">韻母單音</button>
+            <button class="cat-btn" onclick="setCat(this, '結合韻')">結合韻母</button>
+        </div>
+        <div class="container" id="card-container"></div>
+    </div>
+
+    <!-- 測驗模式組件 -->
+    <div id="quiz-ui" class="quiz-panel">
+        <div class="quiz-header">
+            <span>聽音辨字</span>
+            <div class="score-box" id="score-display">得分：0 / 0</div>
+        </div>
+        
+        <button class="audio-trigger" onclick="replayQuiz()" title="重聽發音">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polyline><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+        </button>
+
+        <div class="options-grid" id="options-container"></div>
+
+        <div class="quiz-controls">
+            <button class="ctrl-btn reset-btn" onclick="resetScore()">重置分數</button>
+            <button class="ctrl-btn next-btn" id="next-btn" onclick="nextQuiz()">下一題</button>
+        </div>
+    </div>
+
+    <script>
+        // 注音資料庫 (分類明確)
+        const zhuyinData = [
+            // 聲母 (21)
+            {char: 'ㄅ', cat: '聲母'}, {char: 'ㄆ', cat: '聲母'}, {char: 'ㄇ', cat: '聲母'}, {char: 'ㄈ', cat: '聲母'},
+            {char: 'ㄉ', cat: '聲母'}, {char: 'ㄊ', cat: '聲母'}, {char: 'ㄋ', cat: '聲母'}, {char: 'ㄌ', cat: '聲母'},
+            {char: 'ㄍ', cat: '聲母'}, {char: 'ㄎ', cat: '聲母'}, {char: 'ㄏ', cat: '聲母'}, {char: 'ㄐ', cat: '聲母'},
+            {char: 'ㄑ', cat: '聲母'}, {char: 'ㄒ', cat: '聲母'}, {char: 'ㄓ', cat: '聲母'}, {char: 'ㄔ', cat: '聲母'},
+            {char: 'ㄕ', cat: '聲母'}, {char: 'ㄖ', cat: '聲母'}, {char: 'ㄗ', cat: '聲母'}, {char: 'ㄘ', cat: '聲母'},
+            {char: 'ㄙ', cat: '聲母'},
+            // 韻母單音 (13)
+            {char: 'ㄚ', cat: '韻母'}, {char: 'ㄛ', cat: '韻母'}, {char: 'ㄜ', cat: '韻母'}, {char: 'ㄝ', cat: '韻母'},
+            {char: 'ㄞ', cat: '韻母'}, {char: 'ㄟ', cat: '韻母'}, {char: 'ㄠ', cat: '韻母'}, {char: 'ㄡ', cat: '韻母'},
+            {char: 'ㄢ', cat: '韻母'}, {char: 'ㄣ', cat: '韻母'}, {char: 'ㄤ', cat: '韻母'}, {char: 'ㄥ', cat: '韻母'},
+            {char: 'ㄦ', cat: '韻母'},
+            // 結合韻母 (24)
+            {char: 'ㄧ', cat: '結合韻'}, {char: 'ㄨ', cat: '結合韻'}, {char: 'ㄩ', cat: '結合韻'},
+            {char: 'ㄧㄚ', cat: '結合韻'}, {char: 'ㄧㄛ', cat: '結合韻'}, {char: 'ㄧㄝ', cat: '結合韻'}, {char: 'ㄧㄠ', cat: '結合韻'},
+            {char: 'ㄧㄡ', cat: '結合韻'}, {char: 'ㄧㄢ', cat: '結合韻'}, {char: 'ㄧㄣ', cat: '結合韻'}, {char: 'ㄧㄤ', cat: '結合韻'},
+            {char: 'ㄧㄥ', cat: '結合韻'}, {char: 'ㄨㄚ', cat: '結合韻'}, {char: 'ㄨㄛ', cat: '結合韻'}, {char: 'ㄨㄞ', cat: '結合韻'},
+            {char: 'ㄨㄟ', cat: '結合韻'}, {char: 'ㄨㄢ', cat: '結合韻'}, {char: 'ㄨㄣ', cat: '結合韻'}, {char: 'ㄨㄤ', cat: '結合韻'},
+            {char: 'ㄨㄥ', cat: '結合韻'}, {char: 'ㄩㄝ', cat: '結合韻'}, {char: 'ㄩㄢ', cat: '結合韻'}, {char: 'ㄩㄣ', cat: '結合韻'},
+            {char: 'ㄩㄥ', cat: '結合韻'}
+        ];
+
+        // 模擬發音音頻生成器（使用 Web Audio API，免除外部音檔依賴）
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) audioCtx = new AudioCtx();
+        }
+
+        // 產生注音讀音 (基於特徵頻率模擬語音)
+        function playSound(char, element = null) {
+            initAudio();
+            if(element) element.classList.add('playing');
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            // 根據字符的雜湊值計算一個獨特的特徵頻率，讓每個注音聽起來都不同
+            let code = 0;
+            for(let i=0; i<char.length; i++) code += char.charCodeAt(i);
+            const baseFreq = 180 + (code % 250); 
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(baseFreq, audioCtx.currentTime);
+            
+            // 模擬語音的共振峰變化
+            if(char.length > 1) {
+                osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.4, audioCtx.currentTime + 0.15);
+                osc.frequency.exponentialRampToValueAtTime(baseFreq * 0.9, audioCtx.currentTime + 0.35);
+            } else {
+                osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.1, audioCtx.currentTime + 0.2);
+            }
+
+            gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.4);
+
+            setTimeout(() => {
+                if(element) element.classList.remove('playing');
+            }, 400);
+        }
+
+        // 新增：動態生成答對、答錯的音效
+        function playFeedbackSound(isCorrect) {
+            initAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            if (isCorrect) {
+                // 答對音效：輕快上升的和弦（叮咚）
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.3);
+            } else {
+                // 答錯音效：低沉雙音（叭叭）
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(120, audioCtx.currentTime + 0.12);
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.35);
+            }
+        }
+
+        // 初始化學習介面卡片
+        const cardContainer = document.getElementById('card-container');
+        zhuyinData.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.dataset.cat = item.cat;
+            card.innerHTML = `
+                <div class="char">${item.char}</div>
+                <div class="wave-anim">
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                    <div class="wave-bar"></div>
+                </div>
+            `;
+            card.onclick = () => playSound(item.char, card);
+            cardContainer.appendChild(card);
+        });
+
+        // 分類篩選
+        function setCat(btn, category) {
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            document.querySelectorAll('.card').forEach(card => {
+                if(category === 'all' || card.dataset.cat === category) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // 狀態管理切換
+        function setMode(mode) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if(mode === 'learn') {
+                document.getElementById('learn-ui').style.display = 'block';
+                document.getElementById('quiz-ui').style.display = 'none';
+                clearInterval(countdownTimer); // 離開測驗時停止倒數
+            } else {
+                document.getElementById('learn-ui').style.display = 'none';
+                document.getElementById('quiz-ui').style.display = 'block';
+                resetScore();
+                generateNewQuiz();
+            }
+        }
+
+        // 測驗邏輯
+        let currentAnswer = "";
+        let score = 0;
+        let totalQuestions = 0;
+        let hasAnswered = false;
+        let countdownTimer = null;
+
+        // 生成新題目
+        function generateNewQuiz() {
+            hasAnswered = false;
+            clearInterval(countdownTimer); // 清除上一次的倒數
+            document.getElementById('next-btn').innerText = "下一題";
+
+            // 隨機抽選正確答案
+            const correctItem = zhuyinData[Math.floor(Math.random() * zhuyinData.length)];
+            currentAnswer = correctItem.char;
+
+            // 篩選出同分類的干擾選項
+            const sameCatItems = zhuyinData.filter(item => item.cat === correctItem.cat && item.char !== currentAnswer);
+            
+            // 洗牌取出另外 3 個錯誤選項
+            const shuffledWrong = sameCatItems.sort(() => 0.5 - Math.random()).slice(0, 3);
+            
+            // 合併並再次洗牌
+            const options = [correctItem, ...shuffledWrong].sort(() => 0.5 - Math.random());
+
+            // 渲染選項 UI
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = "";
+            
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt.char;
+                btn.onclick = () => checkAnswer(opt.char, btn);
+                optionsContainer.appendChild(btn);
+            });
+
+            // 【Bug修正】：確保先刷新了畫面選項與答案後，才同步播放當前考題聲音
+            setTimeout(() => {
+                playSound(currentAnswer);
+            }, 50);
+        }
+
+        // 檢查答案
+        function checkAnswer(selectedChar, clickedBtn) {
+            if(hasAnswered) return; // 防止重複點擊
+            hasAnswered = true;
+
+            totalQuestions++;
+            const allButtons = document.querySelectorAll('.option-btn');
+            
+            if(selectedChar === currentAnswer) {
+                // 答對處理
+                score++;
+                clickedBtn.classList.add('correct');
+                playFeedbackSound(true); // 播放答對音效
+                startNextQuestionCountdown(); // 啟動自動下一題倒數提示
+            } else {
+                // 答錯處理
+                clickedBtn.classList.add('wrong');
+                playFeedbackSound(false); // 播放答錯音效
+                // 幫忙把正確答案標示出來
+                allButtons.forEach(btn => {
+                    if(btn.innerText === currentAnswer) btn.classList.add('correct');
+                });
+            }
+
+            // 禁用全部選項按鈕
+            allButtons.forEach(btn => btn.disabled = true);
+            updateScoreDisplay();
+        }
+
+        // 新增：倒數提示與自動跳下一題功能
+        function startNextQuestionCountdown() {
+            let secondsLeft = 3;
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.innerText = `下一題 (${secondsLeft})`;
+
+            countdownTimer = setInterval(() => {
+                secondsLeft--;
+                if (secondsLeft <= 0) {
+                    clearInterval(countdownTimer);
+                    generateNewQuiz(); // 倒數結束，自動載入下一題畫面與聲音
+                } else {
+                    nextBtn.innerText = `下一題 (${secondsLeft})`;
+                }
+            }, 1000);
+        }
+
+        // 手動點擊下一題
+        function nextQuiz() {
+            generateNewQuiz();
+        }
+
+        function replayQuiz() {
+            if(currentAnswer) playSound(currentAnswer);
+        }
+
+        function updateScoreDisplay() {
+            document.getElementById('score-display').innerText = `得分：${score} / ${totalQuestions}`;
+        }
+
+        function resetScore() {
+            score = 0;
+            totalQuestions = 0;
+            updateScoreDisplay();
+            generateNewQuiz();
+        }
+    </script>
+</body>
+</html>
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
